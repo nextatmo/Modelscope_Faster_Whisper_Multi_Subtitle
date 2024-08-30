@@ -101,4 +101,6 @@ Special thanks to the following projects and contributors:
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
 - [Csanmt](https://modelscope.cn/models/iic/)
 
-
+——————————————————————————————————————————————
+个人更新
+qwen2模型增加是否保留原文 
