@@ -94,6 +94,14 @@ python3 app.py
 
 ![avatar](./img/sample.png)
 
+## 个人更新
+1. qwen2模型增加是否保留原文 
+## 调整计划 
+1 UI形式优化
+2 直接导出翻译文本
+3 译文和原文的顺序
+4 自定义AI翻译提示语
+5 选择不同的qwen2翻译模型
 ## Credits
 
 Special thanks to the following projects and contributors:
@@ -101,6 +109,4 @@ Special thanks to the following projects and contributors:
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
 - [Csanmt](https://modelscope.cn/models/iic/)
 
-——————————————————————————————————————————————
-个人更新
-qwen2模型增加是否保留原文 
+
