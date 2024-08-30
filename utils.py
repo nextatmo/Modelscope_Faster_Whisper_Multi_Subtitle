@@ -283,21 +283,27 @@ def make_tran(srt_path):
 
 
 # 翻译字幕 英译中 qwen2
-def make_tran_qwen2(srt_path,lang):
+import os
 
-    with open(srt_path, 'r',encoding="utf-8") as file:
+def make_tran_qwen2(srt_path, lang, keep_original=True):
+    # 打开字幕文件并读取其内容
+    with open(srt_path, 'r', encoding="utf-8") as file:
         gweight_data = file.read()
 
+    # 按照SRT格式，通过双换行符将整个字幕文件拆分成单独的片段
     result = gweight_data.split("\n\n")
 
-    if os.path.exists("./two.srt"):
-        os.remove("./two.srt")
+    # 如果之前生成的翻译文件存在，则删除它，以便生成新的文件
+    output_file = "./two.srt"
+    if os.path.exists(output_file):
+        os.remove(output_file)
 
+    # 遍历每一个字幕片段
     for res in result:
-
+        # 将每个片段按照换行符拆分成行
         line_srt = res.split("\n")
         try:
-
+            # 根据目标语言设置相应的语言标签
             if lang == "zh":
                 lang = "中文"
             elif lang == "en":
@@ -307,29 +313,48 @@ def make_tran_qwen2(srt_path,lang):
             elif lang == "ko":
                 lang = "韩文"
 
+            # 提取字幕文本
             text = line_srt[2]
 
-            content = f'"{text}" 翻译为{lang}，只给我文本的翻译，别添加其他的内容，因为我要做字幕，谢谢'
+            # 构造用于翻译的提示信息
+            content = f'"{text}" 翻译为{lang}，只给我文本的翻译，只需要提供源文本的翻译即可，谢谢'
 
-            response = ollama.chat(model='qwen2:7b',messages=[
-            {
-            'role':'user',
-            'content':content
-            }])
+            # 使用Qwen2模型进行翻译
+            response = ollama.chat(model='qwen2:7b', messages=[
+                {
+                    'role': 'user',
+                    'content': content
+                }
+            ])
+            # 获取翻译后的文本
             translated_text = response['message']['content']
             print(translated_text)
 
+            # 根据keep_original参数决定是否保留原文
+            if keep_original:
+                output_text = f"{line_srt[0]}\n{line_srt[1]}\n{line_srt[2]}\n{translated_text}\n\n"
+                print(f"1The value of keep_original is: {keep_original}")
+            else:
+                output_text = f"{line_srt[0]}\n{line_srt[1]}\n{translated_text}\n\n"
+                print(f"The value of keep_original is: {keep_original}")
+
+
+                
+
+            # 将原字幕和翻译后的文本写入新文件
+            with open(output_file, "a", encoding="utf-8") as f:
+                f.write(output_text)
+
         except IndexError as e:
-            # 处理下标越界异常
+            # 如果发生下标越界异常，则认为所有字幕已翻译完成
             print(f"翻译完毕")
             break
         except Exception as e:
-             print(str(e))
-             
-        
-        with open("./two.srt","a",encoding="utf-8")as f:f.write(f"{line_srt[0]}\n{line_srt[1]}\n{line_srt[2]}\n{translated_text}\n\n")
+            # 捕获其他异常并打印错误信息
+            print(str(e))
 
-    with open("./two.srt","r",encoding="utf-8") as f:
+    # 最后读取并返回翻译后的字幕文件内容
+    with open(output_file, "r", encoding="utf-8") as f:
         content = f.read()
 
     return content
