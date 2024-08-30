@@ -45,21 +45,21 @@ def do_trans_en2zh(srt_path):
 
     return make_tran(srt_path)
 
-def do_trans_en2zh_qwen2(srt_path):
+def do_trans_en2zh_qwen2(srt_path, keep_original):
 
-    return make_tran_qwen2(srt_path,"zh")
+    return make_tran_qwen2(srt_path,"zh", keep_original)
 
-def do_trans_zh2en_qwen2(srt_path):
+def do_trans_zh2en_qwen2(srt_path, keep_original):
 
-    return make_tran_qwen2(srt_path,"en")
+    return make_tran_qwen2(srt_path,"en", keep_original)
 
-def do_trans_ja2zh_qwen2(srt_path):
+def do_trans_ja2zh_qwen2(srt_path, keep_original):
 
-    return make_tran_qwen2(srt_path,"zh")
+    return make_tran_qwen2(srt_path,"zh", keep_original)
 
-def do_trans_ko2zh_qwen2(srt_path):
+def do_trans_ko2zh_qwen2(srt_path, keep_original):
 
-    return make_tran_qwen2(srt_path,"zh")
+    return make_tran_qwen2(srt_path,"zh", keep_original)
 
 def do_trans_zh2en(srt_path):
 
@@ -158,26 +158,28 @@ with gr.Blocks() as app:
     with gr.Accordion("Qwen2大模型字幕翻译"):
         with gr.Row():
 
+            keep_original = gr.Checkbox( label="保留原文/Keep original text")
 
             srt_path_qwen2 = gr.Textbox(label="原始字幕地址，默认为项目目录中的video.srt,也可以输入其他路径",value="./video.srt")
 
+            
             trans_button_en2zh_qwen2 = gr.Button("翻译英语字幕为中文/Translate English subtitles into Chinese")
-
             trans_button_zh2en_qwen2 = gr.Button("翻译中文字幕为英文/Translate Chinese subtitles into English")
-
             trans_button_ja2zh_qwen2 = gr.Button("翻译日文字幕为中文/Translate Japanese subtitles into Chinese")
-
             trans_button_ko2zh_qwen2 = gr.Button("翻译韩文字幕为中文/Translate Korea subtitles into Chinese")
 
             result2 = gr.Textbox(label="翻译结果(会在项目目录生成two.srt/two.srt is generated in the current directory)")
+        
+        #keep_original.change(
+        #    lambda checked: checked,
+        #    inputs=keep_original,
+        #    outputs=[keep_original],
+        #)            
 
-        trans_button_en2zh_qwen2.click(do_trans_en2zh_qwen2,[srt_path_qwen2],outputs=[result2])
-
-        trans_button_zh2en_qwen2.click(do_trans_zh2en_qwen2,[srt_path_qwen2],outputs=[result2])
-
-        trans_button_ja2zh_qwen2.click(do_trans_ja2zh_qwen2,[srt_path_qwen2],outputs=[result2])
-
-        trans_button_ko2zh_qwen2.click(do_trans_ko2zh_qwen2,[srt_path_qwen2],outputs=[result2])
+        trans_button_en2zh_qwen2.click(do_trans_en2zh_qwen2,[srt_path_qwen2, keep_original],outputs=[result2])
+        trans_button_zh2en_qwen2.click(do_trans_zh2en_qwen2,[srt_path_qwen2, keep_original],outputs=[result2])
+        trans_button_ja2zh_qwen2.click(do_trans_ja2zh_qwen2,[srt_path_qwen2, keep_original],outputs=[result2])
+        trans_button_ko2zh_qwen2.click(do_trans_ko2zh_qwen2,[srt_path_qwen2, keep_original],outputs=[result2])
 
     with gr.Accordion("字幕合并"):
         with gr.Row():
